@@ -38,7 +38,7 @@ public class CoreTesting {
         int characterIndex;
         String bufferString;
 
-        File DataFile =new File("C:\\Users\\Odd\\IdeaProjects\\EnglishHelperJ\\PhrasalV.txt");
+        File DataFile =new File("C:\\Users\\Odd\\IdeaProjects\\EnglishHelperJ\\EnglishHelperJ\\PhrasalV.txt");
         FileReader fr = new FileReader(DataFile);
         BufferedReader reader = new BufferedReader(fr);
 

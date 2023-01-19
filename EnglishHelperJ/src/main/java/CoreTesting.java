@@ -14,22 +14,14 @@ public class CoreTesting {
     int MissedIndex = 0;                                //индекс массива пропущенных впросов
 
     protected int TestingType = 0;				//хранит число, соответствующее типу тестирования
-                                                //0-тест закончен
+    String DataFilePath;                                           //0-тест закончен
                                                 //1-тест на знание фразовых конструкций
 
-    CoreTesting() {
-        TestingType = StartTesting();        //Вызывается метод для определения типа теста
+    CoreTesting(String path) throws IOException {
+        DataFilePath=path;
     }
 
-    static int StartTesting(){
-        int testingType;
-        Scanner read = new Scanner(System.in);
-        System.out.println("Для проведения теста по Phrasal verbs, Prepositional phrases, Word patterns \nВведите '1'\n");
-        System.out.println("Для завершения теста введите finish");
-        System.out.println("Для пропуска вопроса введите next");
-        testingType = read.nextInt();
-        return testingType;
-    }
+
 
     public int FileToArray() throws IOException {
 
@@ -38,7 +30,7 @@ public class CoreTesting {
         int characterIndex;
         String bufferString;
 
-        File DataFile =new File("C:\\Users\\Odd\\IdeaProjects\\EnglishHelperJ\\EnglishHelperJ\\PhrasalV.txt");
+        File DataFile =new File(DataFilePath);
         FileReader fr = new FileReader(DataFile);
         BufferedReader reader = new BufferedReader(fr);
 
@@ -129,55 +121,7 @@ public class CoreTesting {
         }
         return 0;
     }
-    int PhrasalTesting(){													//основной метод для запуска теста{
-        int activeQuestionNumber = 0;														//индекс вопросса/ответа в порядке их выведения
-        String activeAnswer;																//строковый буфер для проверки правильности ответа
-        String activeQuestion;																//строковый буфер для текущего вопроса
-        int typeCommand=TestingType;														//управляющая переменная
-        boolean isQuestionRepeated = false;													//переменная для повторяющегося неверного ответа
 
-
-        for (;;) {
-            activeAnswer = String.copyValueOf(AnswerArr[RandomNumberArrPointer[activeQuestionNumber]]);					//в буфер помещаются строки, соответствующие случайному
-            activeQuestion = String.copyValueOf(QuestionArr[RandomNumberArrPointer[activeQuestionNumber]]);				//числу, лежащему в массиве случайных числел
-
-
-            System.out.println(activeQuestion+"___");
-
-            if (typeCommand == 0|| activeQuestionNumber == QuestionNumber) {						//цикл заканчивает работу либо при переборе всех строк из файла
-                break;																				//либо если методом проверки возвращен 0
-            }
-
-            typeCommand = checkAnswer(getAnswer(), activeAnswer);									//проверка правильного ответа
-            //при правильном ответе выводится новая строка
-            if (typeCommand == 1) {
-                activeQuestionNumber++;
-                isQuestionRepeated = false;
-            }
-
-            if (typeCommand == 2) {
-                ErrorsNumber++;
-                if (isQuestionRepeated == false) {													//если ошибочный ответ дан первый раз
-                    WrongAnswer[WrongIndex] = RandomNumberArrPointer[activeQuestionNumber];			//в массив кладется номер текущего вопроса и ответа
-                    WrongIndex++;
-                    isQuestionRepeated = true;
-                }
-
-
-            }
-
-            if (typeCommand == 3) {																			//в случае пропуска вопроса - выводится правильный ответ
-                System.out.println(AnswerArr[RandomNumberArrPointer[activeQuestionNumber]]);				//и после выводится новая строка
-                ErrorsNumber++;
-                MissedQuestions[MissedIndex] = RandomNumberArrPointer[activeQuestionNumber];				//в масив кладется номер текущего вопроса и ответа
-                MissedIndex++;
-                activeQuestionNumber++;
-                isQuestionRepeated = false;
-            }
-        }
-
-        return 0;
-    }
 
     String getAnswer() {
         String answer;
@@ -215,8 +159,8 @@ public class CoreTesting {
     }
     public int TestingSummery()
     {
-        System.out.println("Всего "+ErrorsNumber+" ошибок  из "+QuestionNumber+" словосочетаний");
-        System.out.println("Ошибки в словосочетаниях:\n");
+        System.out.println("Всего "+ErrorsNumber+" ошибок  в "+QuestionNumber+" вопросах");
+        System.out.println("Ошибки:\n");
 
         for (int i = 0; i < WrongIndex; i++) {							//выдает на экран все правильные фразы в которых была допущена ошибка
             System.out.print(QuestionArr[WrongAnswer[i]]);
@@ -224,7 +168,7 @@ public class CoreTesting {
         }
 
 
-        System.out.println("\nПропущенные словосочетания:\n");
+        System.out.println("\nПропущенные вопросы:\n");
 
         for (int x = 0; x < MissedIndex; x++) {							//выдает на экран все фразы, которые были пропущены
             System.out.print(QuestionArr[MissedQuestions[x]]);
